@@ -1,4 +1,5 @@
 # Term-project
+# Team member: Anushka Balaraj
 # Project Proposal: Smart Meal Planner App
 
 ## The Big Idea
