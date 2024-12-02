@@ -1,0 +1,503 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Meal Plan Result</title>
+</head>
+<body>
+    <h1>Here's your {{ preference }} meal plan for the day:</h1>
+    <ul>
+        <li>Breakfast: {{ meal_plan[0] }}</li>
+        <li>Lunch: {{ meal_plan[1] }}</li>
+        <li>Dinner: {{ meal_plan[2] }}</li>
+    </ul>
+    <h2>Nutritional Information:</h2>
+    <p>Calories: {{ "%.2f"|format(nutrients['calories']) }}</p>
+    <p>Carbohydrates: {{ "%.2f"|format(nutrients['carbohydrates']) }}g</p>
+    <p>Fat: {{ "%.2f"|format(nutrients['fat']) }}g</p>
+    <p>Protein: {{ "%.2f"|format(nutrients['protein']) }}g</p>
+    <a href="/">Generate another meal plan</a>
+</body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Meal Plan Results</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Your Meal Plan</h1>
+        <h3 class="text-center">Dietary Preference: {{ preference }}</h3>
+        <div class="row">
+            {% for meal in meal_plan %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img src="{{ meal.image }}" class="card-img-top" alt="{{ meal.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ meal.title }}</h5>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center">
+            <h4>Total Nutrients</h4>
+            <p>Calories: {{ nutrients.calories }}</p>
+            <p>Protein: {{ nutrients.protein }}g</p>
+            <p>Fat: {{ nutrients.fat }}g</p>
+            <p>Carbohydrates: {{ nutrients.carbohydrates }}g</p>
+        </div>
+    </div>
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Plan Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .card {
+            margin-bottom: 2rem;
+        }
+        .card-title {
+            color: #007bff;
+        }
+        .card-subtitle {
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Your {{ preference.capitalize() }} Meal Plan</h1>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3>Nutritional Information</h3>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.calories }}" aria-valuemin="0" aria-valuemax="2500">Calories: {{ nutrients.calories }}</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.protein }}" aria-valuemin="0" aria-valuemax="100">Protein: {{ nutrients.protein }}g</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.fat }}" aria-valuemin="0" aria-valuemax="100">Fat: {{ nutrients.fat }}g</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.carbohydrates }}" aria-valuemin="0" aria-valuemax="300">Carbs: {{ nutrients.carbohydrates }}g</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3>Random Meal Suggestion</h3>
+                <div id="random-meal"></div>
+                <button id="get-random-meal" class="btn btn-primary mt-3">Get Random Meal</button>
+            </div>
+        </div>
+
+        {% for meal in meal_plan %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{ meal.title }}</h4>
+                <h5 class="card-subtitle">Ingredients:</h5>
+                <ul>
+                    {% for ingredient in meal.ingredients %}
+                    <li>{{ ingredient }}</li>
+                    {% endfor %}
+                </ul>
+                <h5 class="card-subtitle">Instructions:</h5>
+                <ol>
+                    {% for step in meal.instructions %}
+                    <li>{{ step }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars
+            document.querySelectorAll('.progress-bar').forEach(bar => {
+                setTimeout(() => {
+                    bar.style.width = (bar.getAttribute('aria-valuenow') / bar.getAttribute('aria-valuemax') * 100) + '%';
+                }, 100);
+            });
+
+            // Random meal suggestion
+            const randomMealBtn = document.getElementById('get-random-meal');
+            const randomMealContainer = document.getElementById('random-meal');
+
+            randomMealBtn.addEventListener('click', function() {
+                fetch('/random_meal')
+                    .then(response => response.json())
+                    .then(data => {
+                        let ingredientsList = data.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
+                        let instructionsList = data.instructions.map(step => `<li>${step}</li>`).join('');
+                        randomMealContainer.innerHTML = `
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">${data.title}</h4>
+                                    <h5 class="card-subtitle">Ingredients:</h5>
+                                    <ul>${ingredientsList}</ul>
+                                    <h5 class="card-subtitle">Instructions:</h5>
+                                    <ol>${instructionsList}</ol>
+                                </div>
+                            </div>`;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Plan Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .card {
+            margin-bottom: 2rem;
+        }
+        .card-title {
+            color: #007bff;
+        }
+        .card-subtitle {
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Your {{ preference.capitalize() }} Meal Plan</h1>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3>Nutritional Information</h3>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.calories }}" aria-valuemin="0" aria-valuemax="2500">Calories: {{ nutrients.calories }}</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.protein }}" aria-valuemin="0" aria-valuemax="100">Protein: {{ nutrients.protein }}g</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.fat }}" aria-valuemin="0" aria-valuemax="100">Fat: {{ nutrients.fat }}g</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.carbohydrates }}" aria-valuemin="0" aria-valuemax="300">Carbs: {{ nutrients.carbohydrates }}g</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3>Random Meal Suggestion</h3>
+                <div id="random-meal"></div>
+                <button id="get-random-meal" class="btn btn-primary mt-3">Get Random Meal</button>
+            </div>
+        </div>
+
+        {% for meal in meal_plan %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{ meal.title }}</h4>
+                <h5 class="card-subtitle">Ingredients:</h5>
+                <ul>
+                    {% for ingredient in meal.ingredients %}
+                    <li>{{ ingredient }}</li>
+                    {% endfor %}
+                </ul>
+                <h5 class="card-subtitle">Instructions:</h5>
+                <ol>
+                    {% for step in meal.instructions %}
+                    <li>{{ step }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars
+            document.querySelectorAll('.progress-bar').forEach(bar => {
+                setTimeout(() => {
+                    bar.style.width = (bar.getAttribute('aria-valuenow') / bar.getAttribute('aria-valuemax') * 100) + '%';
+                }, 100);
+            });
+
+            // Random meal suggestion
+            const randomMealBtn = document.getElementById('get-random-meal');
+            const randomMealContainer = document.getElementById('random-meal');
+
+            randomMealBtn.addEventListener('click', function() {
+                fetch('/random_meal')
+                    .then(response => response.json())
+                    .then(data => {
+                        let ingredientsList = data.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
+                        let instructionsList = data.instructions.map((step, index) => `<li>${index + 1}. ${step}</li>`).join('');
+                        randomMealContainer.innerHTML = `
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">${data.title}</h4>
+                                    <h5 class="card-subtitle">Ingredients:</h5>
+                                    <ul>${ingredientsList}</ul>
+                                    <h5 class="card-subtitle">Instructions:</h5>
+                                    <ol>${instructionsList}</ol>
+                                </div>
+                            </div>`;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+</body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Plan Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .card {
+            margin-bottom: 2rem;
+        }
+        .card-title {
+            color: #007bff;
+        }
+        .card-subtitle {
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+        ul {
+            padding-left: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Your {{ preference.capitalize() }} Meal Plan</h1>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3>Nutritional Information</h3>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.calories }}" aria-valuemin="0" aria-valuemax="2500">Calories: {{ nutrients.calories }}</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.protein }}" aria-valuemin="0" aria-valuemax="100">Protein: {{ nutrients.protein }}g</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.fat }}" aria-valuemin="0" aria-valuemax="100">Fat: {{ nutrients.fat }}g</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.carbohydrates }}" aria-valuemin="0" aria-valuemax="300">Carbs: {{ nutrients.carbohydrates }}g</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3>Random Meal Suggestion</h3>
+                <div id="random-meal"></div>
+                <button id="get-random-meal" class="btn btn-primary mt-3">Get Random Meal</button>
+            </div>
+        </div>
+
+        {% for meal in meal_plan %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{ meal.title }}</h4>
+                <h5 class="card-subtitle">Ingredients:</h5>
+                <ul>
+                    {% for ingredient in meal.ingredients %}
+                    <li>{{ ingredient }}</li>
+                    {% endfor %}
+                </ul>
+                <h5 class="card-subtitle">Instructions:</h5>
+                <p>{{ meal.instructions }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars
+            document.querySelectorAll('.progress-bar').forEach(bar => {
+                setTimeout(() => {
+                    bar.style.width = (bar.getAttribute('aria-valuenow') / bar.getAttribute('aria-valuemax') * 100) + '%';
+                }, 100);
+            });
+
+            // Random meal suggestion
+            const randomMealBtn = document.getElementById('get-random-meal');
+            const randomMealContainer = document.getElementById('random-meal');
+
+            randomMealBtn.addEventListener('click', function() {
+                fetch('/random_meal')
+                    .then(response => response.json())
+                    .then(data => {
+                        let ingredientsList = data.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
+                        let instructions = data.instructions.join(' ');
+                        randomMealContainer.innerHTML = `
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">${data.title}</h4>
+                                    <h5 class="card-subtitle">Ingredients:</h5>
+                                    <ul>${ingredientsList}</ul>
+                                    <h5 class="card-subtitle">Instructions:</h5>
+                                    <p>${instructions}</p>
+                                </div>
+                            </div>`;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Plan Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .card {
+            margin-bottom: 2rem;
+        }
+        .card-title {
+            color: #007bff;
+        }
+        .card-subtitle {
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+        ul {
+            padding-left: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Your {{ preference.capitalize() }} Meal Plan</h1>
+
+        <div class="mt-4">
+            <a href="{{ url_for('meal_plan') }}" class="btn btn-primary">Create Another Meal Plan</a>
+            <a href="{{ url_for('welcome') }}" class="btn btn-secondary">Back to Welcome Page</a>
+        </div>
+    </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3>Nutritional Information</h3>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.calories }}" aria-valuemin="0" aria-valuemax="2500">Calories: {{ nutrients.calories }}</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.protein }}" aria-valuemin="0" aria-valuemax="100">Protein: {{ nutrients.protein }}g</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.fat }}" aria-valuemin="0" aria-valuemax="100">Fat: {{ nutrients.fat }}g</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 0%;" aria-valuenow="{{ nutrients.carbohydrates }}" aria-valuemin="0" aria-valuemax="300">Carbs: {{ nutrients.carbohydrates }}g</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3>Random Meal Suggestion</h3>
+                <div id="random-meal"></div>
+                <button id="get-random-meal" class="btn btn-primary mt-3">Get Random Meal</button>
+            </div>
+        </div>
+
+        {% for meal in meal_plan %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{ meal.title }}</h4>
+                <h5 class="card-subtitle">Ingredients:</h5>
+                <ul>
+                    {% for ingredient in meal.ingredients %}
+                    <li>{{ ingredient }}</li>
+                    {% endfor %}
+                </ul>
+                <h5 class="card-subtitle">Instructions:</h5>
+                <p>{{ meal.instructions }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars
+            document.querySelectorAll('.progress-bar').forEach(bar => {
+                setTimeout(() => {
+                    bar.style.width = (bar.getAttribute('aria-valuenow') / bar.getAttribute('aria-valuemax') * 100) + '%';
+                }, 100);
+            });
+
+            // Random meal suggestion
+            const randomMealBtn = document.getElementById('get-random-meal');
+            const randomMealContainer = document.getElementById('random-meal');
+
+            randomMealBtn.addEventListener('click', function() {
+                fetch('/random_meal')
+                    .then(response => response.json())
+                    .then(data => {
+                        let ingredientsList = data.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
+                        randomMealContainer.innerHTML = `
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">${data.title}</h4>
+                                    <h5 class="card-subtitle">Ingredients:</h5>
+                                    <ul>${ingredientsList}</ul>
+                                    <h5 class="card-subtitle">Instructions:</h5>
+                                    <p>${data.instructions}</p>
+                                </div>
+                            </div>`;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+</body>
+</html>
+

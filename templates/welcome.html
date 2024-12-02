@@ -1,0 +1,70 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .welcome-image {
+            width: 100%; /* Adjust width as needed */
+            height: auto; /* Maintain aspect ratio */
+            margin-top: 15px; /* Add some space above the image */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Welcome to Our Meal Planner!</h1>
+        <img src="https://www.eatingwell.com/thmb/ruB2krC4pDjQZrq3M08tlTwQs94=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/7-Day-Anti-Inflammatory-Meal-Plan-for-Weight-Loss-d8cc451d3d954822a4fa9199c642aaac.jpg" 
+             alt="7-Day Anti-Inflammatory Meal Plan for Weight Loss" class="welcome-image"> 
+        <p>Here you can find delicious meal plans tailored to your dietary preferences.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let's get you Skinny!</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .welcome-image {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        .container {
+            text-align: center;
+            max-width: 800px;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Let's get you Skinny!</h1>
+        <img src="https://www.eatingwell.com/thmb/ruB2krC4pDjQZrq3M08tlTwQs94=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/7-Day-Anti-Inflammatory-Meal-Plan-for-Weight-Loss-d8cc451d3d954822a4fa9199c642aaac.jpg" 
+             alt="7-Day Anti-Inflammatory Meal Plan for Weight Loss" class="welcome-image">
+        <p>Discover delicious meal plans tailored to your dietary preferences and nutritional goals.</p>
+        <a href="{{ url_for('meal_plan') }}" class="btn btn-primary btn-lg">Create Your Meal Plan</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
